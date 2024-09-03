@@ -6,12 +6,12 @@ list_data = []
 for _ in range(2000):
  list_data.append(random.randint(1, 5000))
 
-t1_list = time.time()
+start_time1 = time.time()
 print("List elements:")
 print(list_data)
 
-t2_list = time.time()
-print("Time taken by list:", t2_list - t1_list)
+end_time1 = time.time()
+print("Time taken by list:", end_time1 - start_time1)
 print()
 
 # Part b: Dictionaries
@@ -20,8 +20,8 @@ for _ in range(2000):
  key = f"key_{_}"
  dict_data[key] = random.randint(1, 5000)
  
-t1_dict = time.time()
+start_time2 = time.time()
 print("Dictionary elements:")
 print(dict_data)
-t2_dict = time.time()
-print("Time taken by dictionary:", t2_dict - t1_dict)
+end_time2 = time.time()
+print("Time taken by dictionary:", end_time2 - start_time2)
