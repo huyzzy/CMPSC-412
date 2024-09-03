@@ -1,0 +1,34 @@
+import random
+import time
+
+# Part a: Lists
+list_data = []
+for _ in range(2000):
+ list_data.append(random.randint(1, 5000))
+random_number = random.choice(list_data)
+
+start_time1 = time.time()
+list_data.remove(random_number)
+end_time1 = time.time()
+
+print("Random number deleted from list:", random_number)
+print("List elements after deletion:")
+print(list_data)
+print("Time taken for list deletion:", end_time1 - start_time1)
+print()
+
+# Part b: Dictionaries
+dict_data = {}
+for _ in range(2000):
+ key = f"key_{_}"
+ dict_data[key] = random.randint(1, 5000)
+
+start_time2 = time.time()
+dict_key = f"key_{random_number}"
+del dict_data[dict_key]
+end_time2 = time.time()
+
+print("Random number deleted from dictionary:", random_number)
+print("Dictionary elements after deletion:")
+print(dict_data)
+print("Time taken for dictionary deletion:", end_time2 - start_time2)
