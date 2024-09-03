@@ -1,0 +1,68 @@
+import random
+import time
+
+def generate_numbers():
+    count = 1000000
+    integer_numbers = [random.randint(1, 5000) for _ in range(count)]
+    return integer_numbers
+
+def list_storage(integer_numbers):
+    integer_list = []
+
+    for nums in (integer_numbers):
+        integer_list.append(nums)
+    return integer_list
+
+def dictionary_storage(integer_numbers):
+
+    integer_dictionary = {}
+
+    for i in range(len(integer_numbers)):
+        integer_dictionary[i] = integer_numbers[i]
+
+    return integer_dictionary
+
+def retrieve_from_list(integer_list, search_values):
+    retrieved_values = []
+    for value in search_values:
+        if value in integer_list:
+            retrieved_values.append(value)
+    return retrieved_values
+
+def retrieve_from_dict(integer_dict, search_keys):
+    retrieved_values = []
+    for key in search_keys:
+        if key in integer_dict:
+            retrieved_values.append(integer_dict[key])
+    return retrieved_values
+
+def generate_search_keys(integer_list, num_values=100000):
+
+    search_values = []
+    for i in range(num_values):
+        value = random.choice(integer_list)
+        search_values.append(value)
+    return search_values
+
+# Generate random numbers
+random_numbers = generate_numbers()
+
+# Store in list and dictionary
+integer_list = list_storage(random_numbers)
+integer_dict = dictionary_storage(random_numbers)
+
+# Generate search keys instead of search values
+search_keys = generate_search_keys(integer_dict, 10000)
+
+# Measure retrieval time for list
+start_time1 = time.time()
+list_results = retrieve_from_list(integer_list, search_keys)
+end_time1 = time.time()
+
+# Measure retrieval time for dictionary
+start_time2 = time.time()
+dict_results = retrieve_from_dict(integer_dict, search_keys)
+end_time2 = time.time()
+
+print('Time to retrieve from list: ', end_time1 - start_time1)
+print('Time to retrieve from dictionary: ', end_time2 - start_time2)
