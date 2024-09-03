@@ -1,0 +1,38 @@
+import random
+import time
+
+# Part a: Lists
+list_data = []
+for _ in range(2000):
+ list_data.append(random.randint(1, 5000))
+
+random_number = random.randint(1, 5000)
+
+start_time1 = time.time()
+list_data.append(random_number)
+end_time1 = time.time()
+
+print("Random number inserted into list:", random_number)
+print("List elements after insertion:")
+
+print(list_data)
+print("Time taken for list insertion:", end_time1 - start_time1)
+print()
+
+# Part b: Dictionaries
+dict_data = {}
+for _ in range(2000):
+ key = f"key_{_}"
+ dict_data[key] = random.randint(1, 5000)
+
+start_time2 = time.time()
+
+dict_key = f"key_{random_number}"
+dict_data[dict_key] = random_number
+end_time2 = time.time()
+
+print("Random number inserted into dictionary:", random_number)
+print("Dictionary elements after insertion:")
+
+print(dict_data)
+print("Time taken for dictionary insertion:", end_time2 - start_time2)
