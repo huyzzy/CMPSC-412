@@ -1,27 +1,42 @@
-import time
 import random
-#Part1
-# Part a: Lists
-list_data = []
-for _ in range(2000):
- list_data.append(random.randint(1, 5000))
+import time
+
+def generate_numbers():
+
+    count = 2000
+    integer_numbers = []
+
+    for i in range(count):
+        random_numbers = random.randint(1,5000)
+        integer_numbers.append(random_numbers)
+
+    return integer_numbers
+
+def list_storage(integer_numbers):
+    integer_list = []
+
+    for nums in (integer_numbers):
+        integer_list.append(nums)
+    return integer_list
+
+def dictionary_storage(integer_numbers):
+
+    integer_dictionary = {}
+
+    for i in range(len(integer_numbers)):
+        integer_dictionary[i] = integer_numbers[i]
+
+    return integer_dictionary
+
+random_numbers = generate_numbers()
 
 start_time1 = time.time()
-print("List elements:")
-print(list_data)
-
+print(list_storage(random_numbers),'\n')
 end_time1 = time.time()
-print("Time taken by list:", end_time1 - start_time1)
-print()
 
-# Part b: Dictionaries
-dict_data = {}
-for _ in range(2000):
- key = f"key_{_}"
- dict_data[key] = random.randint(1, 5000)
- 
 start_time2 = time.time()
-print("Dictionary elements:")
-print(dict_data)
+print(dictionary_storage(random_numbers))
 end_time2 = time.time()
-print("Time taken by dictionary:", end_time2 - start_time2)
+
+print('time to print list storaged: ', end_time1 - start_time1)
+print('time to print dictionary storaged: ', end_time2 - start_time2)
