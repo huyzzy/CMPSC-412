@@ -1,0 +1,24 @@
+from collections import deque
+
+def merge_queues(queue1, queue2):
+    result_queue = deque()
+    
+    while queue1 and queue2:
+        if queue1[0] <= queue2[0]:
+            result_queue.append(queue1.popleft())
+        else:
+            result_queue.append(queue2.popleft())
+    
+    # Append remaining elements
+    while queue1:
+        result_queue.append(queue1.popleft())
+    while queue2:
+        result_queue.append(queue2.popleft())
+    
+    return result_queue
+
+# Example usage
+q1 = deque(["apple", "banana", "grape"])
+q2 = deque(["cherry", "pear", "watermelon"])
+result = merge_queues(q1, q2)
+print(list(result))  # Output: ['apple', 'banana', 'cherry', 'grape', 'pear', 'watermelon']
