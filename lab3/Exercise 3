@@ -1,0 +1,21 @@
+def is_balanced(expression):
+    stack = []
+    matching_brackets = {')': '(', ']': '[', '}': '{'}
+    
+    for char in expression:
+        if char in '({[':
+            stack.append(char)
+        elif char in ')}]':
+            if not stack or stack.pop() != matching_brackets[char]:
+                return False
+    
+    return len(stack) == 0
+
+# Test cases
+expressions = ["{,[,],}", "{,(,},)", "(,{,),},)"]
+
+for expr in expressions:
+    if is_balanced(expr):
+        print(f"{expr}: Balanced")
+    else:
+        print(f"{expr}: Not Balanced")
