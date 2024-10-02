@@ -1,25 +1,39 @@
-class QueueUsingStacks:
+class Stack:
     def __init__(self):
-        self.stack_in = []
-        self.stack_out = []
-    
-    def enqueue(self, value):
-        self.stack_in.append(value)
-    
-    def dequeue(self):
-        if not self.stack_out:
-            while self.stack_in:
-                self.stack_out.append(self.stack_in.pop())
-        if self.stack_out:
-            return self.stack_out.pop()
-        else:
-            return "Queue is empty"
+        self.items = []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        return None
 
     def is_empty(self):
-        return len(self.stack_in) == 0 and len(self.stack_out) == 0
+        return len(self.items) == 0
 
-# Initialize the queue
-queue = QueueUsingStacks()
+    def top(self):
+        if not self.is_empty():
+            return self.items[-1]
+        return None
+
+class Queue:
+    def __init__(self):
+        self.stack_enque = Stack()  # Stack used for enqueue operations
+        self.stack_deque = Stack()  # Stack used for dequeue operations
+
+    def enqueue(self, item):
+        self.stack_enque.push(item)
+
+    def dequeue(self):
+        if self.stack_deque.is_empty():
+            while not self.stack_enque.is_empty():
+                self.stack_deque.push(self.stack_enque.pop())
+        return self.stack_deque.pop()
+
+# Example usage
+queue = Queue()
 
 # Enqueue elements
 queue.enqueue(10)
@@ -30,4 +44,4 @@ queue.enqueue(30)
 print(queue.dequeue())  # Output: 10 (FIFO)
 print(queue.dequeue())  # Output: 20
 print(queue.dequeue())  # Output: 30
-print(queue.dequeue())  # Output: "Queue is empty" (No more elements)
+print(queue.dequeue())  # Output: None (Queue is empty)
