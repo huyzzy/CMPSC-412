@@ -1,0 +1,37 @@
+import sys
+
+def guess_number_with_memory():
+    low = 1
+    high = 10000
+    attempts = 0
+
+    print(f"Think of a number between {low} and {high}.")
+    
+    print(f"Memory size of 'low': {sys.getsizeof(low)} bytes")
+    print(f"Memory size of 'high': {sys.getsizeof(high)} bytes")
+    print(f"Memory size of 'attempts': {sys.getsizeof(attempts)} bytes")
+    
+    while low <= high:
+        attempts += 1
+        guess = (low + high) // 2
+        
+        print(f"Memory size of 'guess': {sys.getsizeof(guess)} bytes")
+        
+        print(f"My guess is: {guess}")
+        
+        feedback = input("Is it 'correct', 'low', or 'high'? ").strip().lower()
+        
+        if feedback == "correct":
+            print(f"I've guessed your number in {attempts} attempts!")
+            return guess
+        elif feedback == "low":
+            low = guess + 1
+        elif feedback == "high":
+            high = guess - 1
+        else:
+            print("Please provide a valid input: 'correct', 'low', or 'high'.")
+    
+    return None
+
+# Play the game and show memory usage
+guess_number_with_memory()
