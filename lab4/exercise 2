@@ -1,0 +1,121 @@
+import time
+
+# Function to read data from the text file
+def read_data(file_path):
+    students = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            data = line.strip().split()
+            student = {
+                'id': data[0],
+                'first_name': data[1],
+                'last_name': data[2],
+                'email': data[3],
+                'major': data[4]
+            }
+            students.append(student)
+    return students
+
+# Selection sort
+def selection_sort(data, key):
+    n = len(data)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if data[j][key] < data[min_idx][key]:
+                min_idx = j
+        data[i], data[min_idx] = data[min_idx], data[i]
+    return data
+
+# Insertion sort
+def insertion_sort(data, key):
+    for i in range(1, len(data)):
+        key_item = data[i]
+        j = i - 1
+        while j >= 0 and key_item[key] < data[j][key]:
+            data[j + 1] = data[j]
+            j -= 1
+        data[j + 1] = key_item
+    return data
+
+# Bubble sort
+def bubble_sort(data, key):
+    n = len(data)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if data[j][key] > data[j + 1][key]:
+                data[j], data[j + 1] = data[j + 1], data[j]
+    return data
+
+# Merge sort
+def merge_sort(data, key):
+    if len(data) > 1:
+        mid = len(data) // 2
+        left_half = data[:mid]
+        right_half = data[mid:]
+
+        merge_sort(left_half, key)
+        merge_sort(right_half, key)
+
+        i = j = k = 0
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i][key] < right_half[j][key]:
+                data[k] = left_half[i]
+                i += 1
+            else:
+                data[k] = right_half[j]
+                j += 1
+            k += 1
+
+        while i < len(left_half):
+            data[k] = left_half[i]
+            i += 1
+            k += 1
+
+        while j < len(right_half):
+            data[k] = right_half[j]
+            j += 1
+            k += 1
+    return data
+
+# Function to measure sorting time
+def time_sorting(sort_function, data, key):
+    start_time = time.perf_counter()
+    sorted_data = sort_function(data, key)
+    end_time = time.perf_counter()
+    return sorted_data, end_time - start_time
+
+# Function to print sorted data
+def print_sorted_data(data):
+    for student in data:
+        print(f"{student['id']} {student['first_name']} {student['last_name']} {student['email']} {student['major']}")
+
+# Main function
+def main():
+    # Read data from the provided file
+    file_path = 'C:\\Users\\khuy1\\Desktop\\CMPSC 412 lab 4.txt'  # Make sure this path points to your file
+    students = read_data(file_path)
+
+    # Sort by both student ID and first name using different algorithms
+    sort_keys = ['id', 'first_name']  # Sort by student ID and then by first name
+    sort_functions = [
+        (selection_sort, "Selection Sort"),
+        (insertion_sort, "Insertion Sort"),
+        (bubble_sort, "Bubble Sort"),
+        (merge_sort, "Merge Sort")
+    ]
+
+    for sort_key in sort_keys:
+        print(f"\nSorting by {sort_key}:")
+
+        for sort_function, sort_name in sort_functions:
+            # Copy original data to avoid modifying the original list
+            data_copy = students.copy()
+
+            # Sort and time the operation
+            sorted_data, time_taken = time_sorting(sort_function, data_copy, sort_key)
+            print(f"\n{sort_name} took {time_taken:.6f} seconds")
+            print_sorted_data(sorted_data)
+
+if __name__ == "__main__":
+    main()
