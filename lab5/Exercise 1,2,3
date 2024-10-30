@@ -191,3 +191,33 @@ print("Post-order Traversal of Merged Tree:", tree1.postorder_traversal())
 print("Minimum value in Merged Tree:", tree1.min_value())
 print("Maximum value in Merged Tree:", tree1.max_value())
 
+def build_bst_from_list(elements):
+    """Builds a Binary Search Tree from a list of elements and returns the root of the tree."""
+    bst = BinarySearchTree()
+    for element in elements:
+        bst.insert(element)
+    return bst
+
+def is_valid_bst(node, min_val=float('-inf'), max_val=float('inf')):
+    """Checks if the binary tree rooted at `node` is a valid Binary Search Tree."""
+    if node is None:
+        return True
+    
+    # The current node's value must be within the valid range
+    if not (min_val < node.val < max_val):
+        return False
+    
+    # Recursively check the left and right subtrees with updated ranges
+    return (is_valid_bst(node.left, min_val, node.val) and
+            is_valid_bst(node.right, node.val, max_val))
+
+# List of elements to build the BST
+elements = [15, 10, 20, 8, 12, 17, 25, 6, 11, 16]
+
+# Build the BST from the list
+bst = build_bst_from_list(elements)
+print("\nIn-order Traversal of BST:", bst.inorder_traversal())
+
+# Check if the built tree is a valid BST
+is_bst = is_valid_bst(bst.root)
+print("Is the tree a valid BST?", is_bst)
