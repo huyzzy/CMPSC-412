@@ -1,0 +1,193 @@
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        """Inserts a new node with the given key in the binary search tree."""
+        if self.root is None:
+            self.root = Node(key)
+        else:
+            self._insert_recursive(self.root, key)
+
+    def _insert_recursive(self, node, key):
+        if key < node.val:
+            if node.left is None:
+                node.left = Node(key)
+            else:
+                self._insert_recursive(node.left, key)
+        else:
+            if node.right is None:
+                node.right = Node(key)
+            else:
+                self._insert_recursive(node.right, key)
+
+    def inorder_traversal(self):
+        """Performs in-order traversal of the tree."""
+        return self._inorder_recursive(self.root)
+
+    def _inorder_recursive(self, node):
+        result = []
+        if node:
+            result += self._inorder_recursive(node.left)
+            result.append(node.val)
+            result += self._inorder_recursive(node.right)
+        return result
+
+    def preorder_traversal(self):
+        """Performs pre-order traversal of the tree."""
+        return self._preorder_recursive(self.root)
+
+    def _preorder_recursive(self, node):
+        result = []
+        if node:
+            result.append(node.val)
+            result += self._preorder_recursive(node.left)
+            result += self._preorder_recursive(node.right)
+        return result
+
+    def postorder_traversal(self):
+        """Performs post-order traversal of the tree."""
+        return self._postorder_recursive(self.root)
+
+    def _postorder_recursive(self, node):
+        result = []
+        if node:
+            result += self._postorder_recursive(node.left)
+            result += self._postorder_recursive(node.right)
+            result.append(node.val)
+        return result
+
+    def find(self, key):
+        """Finds a node with the specified key."""
+        return self._find_recursive(self.root, key)
+
+    def _find_recursive(self, node, key):
+        if node is None or node.val == key:
+            return node is not None
+        elif key < node.val:
+            return self._find_recursive(node.left, key)
+        else:
+            return self._find_recursive(node.right, key)
+
+    def min_value(self):
+        """Finds the minimum value in the binary search tree."""
+        if self.root is None:
+            return None
+        current = self.root
+        while current.left is not None:
+            current = current.left
+        return current.val
+
+    def max_value(self):
+        """Finds the maximum value in the binary search tree."""
+        if self.root is None:
+            return None
+        current = self.root
+        while current.right is not None:
+            current = current.right
+        return current.val
+
+
+    def remove(self, key):
+        """Removes a node with the specified key from the binary search tree."""
+        self.root = self._remove_recursive(self.root, key)
+
+    def _remove_recursive(self, node, key):
+        if node is None:
+            return node
+
+        # Step 1: Find the node to be removed
+        if key < node.val:
+            node.left = self._remove_recursive(node.left, key)
+        elif key > node.val:
+            node.right = self._remove_recursive(node.right, key)
+        else:
+            # Case 1: Node with no children (leaf node)
+            if node.left is None and node.right is None:
+                return None
+
+            # Case 2: Node with only one child
+            if node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+
+            # Case 3: Node with two children
+            # Find the inorder successor (smallest in the right subtree)
+            min_larger_node = self._min_value_node(node.right)
+            node.val = min_larger_node.val
+            node.right = self._remove_recursive(node.right, min_larger_node.val)
+
+        return node
+
+    def _min_value_node(self, node):
+        """Finds the node with the minimum value (used for finding inorder successor)."""
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+    
+
+    def merge_into(self, other_tree):
+        """Merges all nodes from `other_tree` into `self` tree by direct insertion."""
+        self._merge_recursive(other_tree.root)
+
+    def _merge_recursive(self, node):
+        """Helper function to insert nodes of the other tree into the current tree."""
+        if node:
+            self.insert(node.val)
+            self._merge_recursive(node.left)
+            self._merge_recursive(node.right)
+
+# Create and populate the first tree with at least 10 values
+tree1 = BinarySearchTree()
+values_tree1 = [15, 10, 20, 8, 12, 17, 25, 6, 11, 16]
+for value in values_tree1:
+    tree1.insert(value)
+
+# Demonstrate traversal functions
+print("In-order Traversal of Tree1:", tree1.inorder_traversal())
+print("Pre-order Traversal of Tree1:", tree1.preorder_traversal())
+print("Post-order Traversal of Tree1:", tree1.postorder_traversal())
+
+# Demonstrate find function
+print("Find 12 in Tree1:", tree1.find(12))   # Should be True
+print("Find 21 in Tree1:", tree1.find(21))   # Should be False
+
+# Demonstrate min and max functions
+print("Minimum value in Tree1:", tree1.min_value())
+print("Maximum value in Tree1:", tree1.max_value())
+
+# Demonstrate remove function
+print("\nRemoving nodes from Tree1...")
+tree1.remove(6)    # Remove a leaf node
+print("After removing 6 (leaf node), In-order Traversal:", tree1.inorder_traversal())
+tree1.remove(10)   # Remove a node with one child
+print("After removing 10 (node with one child), In-order Traversal:", tree1.inorder_traversal())
+tree1.remove(15)   # Remove a node with two children
+print("After removing 15 (node with two children), In-order Traversal:", tree1.inorder_traversal())
+
+
+
+tree2 = BinarySearchTree()
+values_tree2 = [18, 14, 22, 13, 19, 21, 24, 23, 26, 27]
+for value in values_tree2:
+    tree2.insert(value)
+
+# Merge Tree2 into Tree1 and display the result
+tree1.merge_into(tree2)
+print("\nAfter merging Tree2 into Tree1:")
+
+# Print the traversals of the merged tree
+print("In-order Traversal of Merged Tree:", tree1.inorder_traversal())
+print("Pre-order Traversal of Merged Tree:", tree1.preorder_traversal())
+print("Post-order Traversal of Merged Tree:", tree1.postorder_traversal())
+print("Minimum value in Merged Tree:", tree1.min_value())
+print("Maximum value in Merged Tree:", tree1.max_value())
+
