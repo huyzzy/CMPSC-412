@@ -1,0 +1,101 @@
+class Graph:
+    def __init__(self, graph_dict=None):
+        """Initialize the graph with an optional dictionary representing adjacency lists."""
+        if graph_dict is None:
+            graph_dict = {}
+        self.graph = graph_dict
+
+    def generate_edges(self):
+        edges = []
+        for vertex in self.graph:
+            for neighbor in self.graph[vertex]:
+                if {vertex, neighbor} not in edges:
+                    edges.append((vertex, neighbor))
+        return edges
+
+    def find_isolated_nodes(self):
+        isolated = [node for node in self.graph if not self.graph[node]]
+        return isolated
+
+    def find_path(self, start_vertex, end_vertex, path=None):
+        if path is None:
+            path = []
+        path = path + [start_vertex]
+        if start_vertex == end_vertex:
+            return path
+        if start_vertex not in self.graph:
+            return None
+        for neighbor in self.graph[start_vertex]:
+            if neighbor not in path:
+                new_path = self.find_path(neighbor, end_vertex, path)
+                if new_path:
+                    return new_path
+        return None
+
+    def find_all_paths(self, start_vertex, end_vertex, path=[]):
+        path = path + [start_vertex]
+        if start_vertex == end_vertex:
+            return [path]
+        if start_vertex not in self.graph:
+            return []
+        paths = []
+        for neighbor in self.graph[start_vertex]:
+            if neighbor not in path:
+                new_paths = self.find_all_paths(neighbor, end_vertex, path)
+                for p in new_paths:
+                    paths.append(p)
+        return paths
+
+    def is_connected(self, vertices_encountered=None, start_vertex=None):
+        if vertices_encountered is None:
+            vertices_encountered = set()
+        if start_vertex is None:
+            start_vertex = list(self.graph.keys())[0]
+        vertices_encountered.add(start_vertex)
+        if len(vertices_encountered) != len(self.graph):
+            for neighbor in self.graph[start_vertex]:
+                if neighbor not in vertices_encountered:
+                    if self.is_connected(vertices_encountered, neighbor):
+                        return True
+        return len(vertices_encountered) == len(self.graph)
+
+# Test the class with examples
+
+# Example Graph
+graph_dict = {
+    "A": ["B", "C"],
+    "B": ["A", "D", "E"],
+    "C": ["A", "F"],
+    "D": ["B"],
+    "E": ["B", "F"],
+    "F": ["C", "E"],
+    "G": []
+}
+
+g = Graph(graph_dict)
+print("Edges of the graph:", g.generate_edges())
+print("Isolated nodes:", g.find_isolated_nodes())
+print("Path from A to F:", g.find_path("A", "F"))
+print("All paths from A to F:", g.find_all_paths("A", "F"))
+print("Is the graph connected?", g.is_connected())
+
+
+# Connected Graph Example
+connected_graph_dict = {
+    "A": ["B", "C"],
+    "B": ["A", "D", "E"],
+    "C": ["A", "F"],
+    "D": ["B", "F"],
+    "E": ["B", "F"],
+    "F": ["C", "D", "E"]
+}
+
+# Initialize the Graph
+connected_graph = Graph(connected_graph_dict)
+
+# Test the functions
+print("\nEdges of the graph:", connected_graph.generate_edges())
+print("Isolated nodes:", connected_graph.find_isolated_nodes())
+print("Path from A to F:", connected_graph.find_path("A", "F"))
+print("All paths from A to F:", connected_graph.find_all_paths("A", "F"))
+print("Is the graph connected?", connected_graph.is_connected())
