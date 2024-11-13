@@ -1,0 +1,101 @@
+from collections import deque
+import heapq
+
+# Define the graph as an adjacency list, ignoring weights
+graph = {
+    'A': ['B', 'C', 'F'],
+    'B': ['A', 'D', 'E'],
+    'C': ['B', 'F'],
+    'D': ['A', 'E', 'F'],
+    'E': ['A', 'D'],
+    'F': ['B', 'E']
+}
+
+def bfs(graph, start):
+    visited = set()  # Track visited nodes
+    queue = deque([start])  # Initialize queue with the starting node
+    bfs_order = []  # To store the order of nodes visited
+    
+    while queue:
+        node = queue.popleft()  # Dequeue a node
+        if node not in visited:
+            visited.add(node)  # Mark node as visited
+            bfs_order.append(node)  # Add node to the order of BFS
+            # Enqueue all unvisited neighbors
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+                    
+    return bfs_order
+
+# Perform BFS starting from node 'A'
+bfs_result = bfs(graph, 'A')
+print("BFS Traversal Order:", bfs_result)
+
+# Define the graph as an adjacency list, ignoring weights
+graph = {
+    1: [2, 3, 6],
+    2: [3],
+    3: [4, 6],
+    4: [5],
+    5: [6],
+    6: [4]
+}
+
+def dfs(graph, start, visited=None):
+    if visited is None:
+        visited = set()  # Track visited nodes
+    visited.add(start)  # Mark the current node as visited
+    dfs_order = [start]  # Store the current node as part of DFS order
+
+    # Visit each neighbor of the current node
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            dfs_order.extend(dfs(graph, neighbor, visited))  # Recursively visit unvisited neighbors
+    
+    return dfs_order
+
+# Perform DFS starting from node 1
+dfs_result = dfs(graph, 1)
+print("DFS Traversal Order:", dfs_result)
+
+
+
+# Define the graph with weights as an adjacency list
+graph = {
+    1: [(2, 10), (3, 15), (6, 5)],
+    2: [(3, 7)],
+    3: [(4, 7), (6, 10)],
+    4: [(5, 7)],
+    5: [(6, 13)],
+    6: [(4, 5)]
+}
+
+def dijkstra(graph, start):
+    # Initialize distances with infinity for each node, except the start node (distance 0)
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    # Use a priority queue to store nodes to explore, initialized with the start node
+    priority_queue = [(0, start)]
+    
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+        
+        # Skip processing if we have already found a shorter path to the current node
+        if current_distance > distances[current_node]:
+            continue
+        
+        # Explore neighbors of the current node
+        for neighbor, weight in graph[current_node]:
+            distance = current_distance + weight
+            
+            # Only consider this path if it's shorter than the known distance to the neighbor
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+    
+    return distances
+
+# Perform Dijkstra's algorithm starting from node 1
+dijkstra_result = dijkstra(graph, 1)
+print("Shortest distances from node 1:", dijkstra_result)
