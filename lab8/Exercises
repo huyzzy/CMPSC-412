@@ -1,0 +1,182 @@
+import random
+import time
+from collections import deque
+
+# Binary Search Tree Implementation
+class BSTNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, value):
+        if self.root is None:
+            self.root = BSTNode(value)
+        else:
+            self._insert_recursive(self.root, value)
+
+    def _insert_recursive(self, node, value):
+        if value < node.value:
+            if node.left is None:
+                node.left = BSTNode(value)
+            else:
+                self._insert_recursive(node.left, value)
+        else:
+            if node.right is None:
+                node.right = BSTNode(value)
+            else:
+                self._insert_recursive(node.right, value)
+
+    def in_order_traversal(self):
+        result = []
+        self._in_order_traversal_recursive(self.root, result)
+        return result
+
+    def _in_order_traversal_recursive(self, node, result):
+        if node:
+            self._in_order_traversal_recursive(node.left, result)
+            result.append(node.value)
+            self._in_order_traversal_recursive(node.right, result)
+
+    def search(self, value):
+        return self._search_recursive(self.root, value)
+
+    def _search_recursive(self, node, value):
+        if node is None:
+            return False
+        if node.value == value:
+            return True
+        elif value < node.value:
+            return self._search_recursive(node.left, value)
+        else:
+            return self._search_recursive(node.right, value)
+
+    def delete(self, value):
+        self.root = self._delete_recursive(self.root, value)
+
+    def _delete_recursive(self, node, value):
+        if not node:
+            return None
+        if value < node.value:
+            node.left = self._delete_recursive(node.left, value)
+        elif value > node.value:
+            node.right = self._delete_recursive(node.right, value)
+        else:
+            if not node.left:
+                return node.right
+            if not node.right:
+                return node.left
+            min_larger_node = self._get_min(node.right)
+            node.value = min_larger_node.value
+            node.right = self._delete_recursive(node.right, min_larger_node.value)
+        return node
+
+    def _get_min(self, node):
+        while node.left:
+            node = node.left
+        return node
+
+# Function to generate random numbers
+def generate_random_numbers(count, min_val=1, max_val=10000):
+    return [random.randint(min_val, max_val) for _ in range(count)]
+
+# Function to measure time for an operation
+def measure_time(func, *args):
+    start_time = time.perf_counter()
+    func(*args)
+    return time.perf_counter() - start_time
+
+# Main Program
+def main():
+    num_elements = 25000
+    random_numbers = generate_random_numbers(num_elements)
+
+    # Initialize data structures
+    array_list = list(random_numbers)
+
+    # Modified dictionary to count occurrences of numbers
+    dictionary = {}
+    for num in random_numbers:
+        dictionary[num] = dictionary.get(num, 0) + 1
+
+    bst = BinarySearchTree()
+    linked_list = deque(random_numbers)
+
+    # Populate the BST
+    for num in random_numbers:
+        bst.insert(num)
+
+    # Function to print elements safely
+    def safe_print(data, name):
+        print(f"\nFirst 100 elements of {name}:")
+        print(data[:100] if isinstance(data, list) else list(data.keys())[:100])
+        print(f"Total elements in {name}: {len(data)}")
+
+    # 1. Measure and print all elements
+    results = []
+    results.append(["Data Structure", "Print Time (s)"])
+    print_time_list = measure_time(lambda: safe_print(array_list, "List"))
+    print_time_dict = measure_time(lambda: safe_print(dictionary, "Dictionary"))
+    print_time_bst = measure_time(lambda: safe_print(bst.in_order_traversal(), "Binary Search Tree"))
+    print_time_linked_list = measure_time(lambda: safe_print(list(linked_list), "Linked List"))
+    results.append(["List", print_time_list])
+    results.append(["Dictionary", print_time_dict])
+    results.append(["Binary Search Tree", print_time_bst])
+    results.append(["Linked List", print_time_linked_list])
+
+    # 2. Perform retrievals (only once)
+    retrieval_times = [["Data Structure", "Retrieval Time (s)"]]
+    retrieval_value = random.choice(random_numbers)  # Use one random value for all
+    list_retrieval_time = measure_time(lambda: retrieval_value in array_list)
+    dict_retrieval_time = measure_time(lambda: retrieval_value in dictionary)
+    bst_retrieval_time = measure_time(bst.search, retrieval_value)
+    linked_list_retrieval_time = measure_time(lambda: retrieval_value in linked_list)
+    retrieval_times.append(["List", list_retrieval_time])
+    retrieval_times.append(["Dictionary", dict_retrieval_time])
+    retrieval_times.append(["Binary Search Tree", bst_retrieval_time])
+    retrieval_times.append(["Linked List", linked_list_retrieval_time])
+
+    # 3. Perform insertions (only once)
+    insertion_times = [["Data Structure", "Insertion Time (s)"]]
+    insertion_value = random.randint(1, 10000)
+    list_insertion_time = measure_time(array_list.append, insertion_value)
+    dict_insertion_time = measure_time(lambda: dictionary.update({insertion_value: 1}))
+    bst_insertion_time = measure_time(bst.insert, insertion_value)
+    linked_list_insertion_time = measure_time(linked_list.append, insertion_value)
+    insertion_times.append(["List", list_insertion_time])
+    insertion_times.append(["Dictionary", dict_insertion_time])
+    insertion_times.append(["Binary Search Tree", bst_insertion_time])
+    insertion_times.append(["Linked List", linked_list_insertion_time])
+
+    # 4. Perform deletions (only once)
+    deletion_times = [["Data Structure", "Deletion Time (s)"]]
+    deletion_value = random.choice(random_numbers)  # Use one random value for all
+    list_deletion_time = measure_time(lambda: array_list.remove(deletion_value) if deletion_value in array_list else None)
+    dict_deletion_time = measure_time(dictionary.pop, deletion_value, None)
+    bst_deletion_time = measure_time(bst.delete, deletion_value)
+    linked_list_deletion_time = measure_time(lambda: linked_list.remove(deletion_value) if deletion_value in linked_list else None)
+    deletion_times.append(["List", list_deletion_time])
+    deletion_times.append(["Dictionary", dict_deletion_time])
+    deletion_times.append(["Binary Search Tree", bst_deletion_time])
+    deletion_times.append(["Linked List", linked_list_deletion_time])
+
+    # Print results
+    print("Printing Times:")
+    for row in results:
+        print(row)
+    print("\nRetrieval Times:")
+    for row in retrieval_times:
+        print(row)
+    print("\nInsertion Times:")
+    for row in insertion_times:
+        print(row)
+    print("\nDeletion Times:")
+    for row in deletion_times:
+        print(row)
+
+if __name__ == "__main__":
+    main()
