@@ -1,0 +1,68 @@
+class Node:
+    def __init__(self, char, freq, left=None, right=None):
+        self.char = char
+        self.freq = freq
+        self.left = left
+        self.right = right
+    def __lt__(self, other):
+        return self.freq < other.freq
+
+import heapq
+from collections import defaultdict
+
+def build_huffman_tree(char_freq):
+    priority_queue = [Node(char, freq) for char, freq in char_freq.items()]
+    heapq.heapify(priority_queue)
+    while len(priority_queue) > 1:
+        left = heapq.heappop(priority_queue)
+        right = heapq.heappop(priority_queue)
+        combined = Node(None, left.freq + right.freq, left, right)
+        heapq.heappush(priority_queue, combined)
+
+    return heapq.heappop(priority_queue)
+
+def generate_huffman_codes(root):
+    codes = {}
+
+    def traverse(node, code):
+        if node is None:
+            return
+
+        if node.char is not None:  
+            codes[node.char] = code
+
+        traverse(node.left, code + "0")
+        traverse(node.right, code + "1")
+
+    traverse(root, "")
+    return codes
+
+def compress_text(text, huffman_codes):
+    compressed = "".join(huffman_codes[char] for char in text)
+    return compressed
+
+def word_frequency_analysis(text):
+    word_freq = defaultdict(int)
+    words = text.split()
+
+    for word in words:
+        word_freq[word] += 1
+
+    return dict(word_freq) 
+
+def huffman_compress_and_analyze(text):
+    char_freq = defaultdict(int)
+
+    for char in text:
+        char_freq[char] += 1
+    huffman_tree = build_huffman_tree(char_freq)
+    huffman_codes = generate_huffman_codes(huffman_tree)
+    compressed_text = compress_text(text, huffman_codes)
+    word_freq = word_frequency_analysis(text)
+
+    return compressed_text, word_freq 
+
+sample_text = "this is the text that is this this text is a test text"
+compressed_text, word_frequency = huffman_compress_and_analyze(sample_text)
+print("Compressed Text:", compressed_text)
+print("Word Frequency Analysis:", word_frequency)
